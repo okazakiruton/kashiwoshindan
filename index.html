@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カシヲ診断 - 今日のあなたにおすすめの回</title>
+<meta property="og:title" content="カシヲ診断">
+<meta property="og:description" content="8つの質問から、今日のあなたにぴったりのカシヲさんの回を診断します。">
+<meta property="og:url" content="https://okazakiruton.github.io/kashiwoshindan/">
+<meta property="og:image" content="https://okazakiruton.github.io/kashiwoshindan/ogp-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="カシヲ診断">
+<meta name="twitter:description" content="8つの質問から、今日のあなたにぴったりのカシヲさんの回を診断します。">
+<meta name="twitter:image" content="https://okazakiruton.github.io/kashiwoshindan/ogp-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
@@ -427,7 +436,7 @@ function renderResult(){
   const s = nearestSeries();
   const url = "https://www.youtube.com/@kashiwo/search?query=" + encodeURIComponent(s.keyword);
   const shareText = `カシヲ診断の結果、私は「${s.name}」タイプでした!(${s.genre})\n#カシヲ診断`;
-  const shareUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText);
+  const shareUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(location.href);
   card.innerHTML = `
     <div class="result">
       <span class="genre-tag">${s.genre}</span>
