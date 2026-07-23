@@ -1,0 +1,2 @@
+# kashiwoshindan
+カシヲ診断
