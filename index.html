@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カシヲ診断 - 今日のあなたにおすすめの回</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #12141c;
+    --panel: #1b1f2c;
+    --panel-2: #232838;
+    --line: #f4f5f7;
+    --line-dim: #8890a6;
+    --ume: #c1443c;
+    --ume-soft: #7a2c27;
+    --mint: #6fd6c4;
+    --radius: 18px;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1200px 700px at 50% -10%, #1c2133 0%, var(--bg) 60%);
+    color: var(--line);
+    font-family: 'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', sans-serif;
+    min-height: 100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding: 32px 16px 64px;
+  }
+  .mono{ font-family:'Share Tech Mono', monospace; letter-spacing: 0.04em; }
+
+  .app{
+    width: 100%;
+    max-width: 480px;
+  }
+
+  header.top{
+    text-align:center;
+    margin-bottom: 22px;
+  }
+  header.top .eyebrow{
+    font-size: 12px;
+    color: var(--mint);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+  header.top h1{
+    font-size: 22px;
+    margin: 6px 0 2px;
+    font-weight: 900;
+  }
+  header.top p{
+    font-size: 12px;
+    color: var(--line-dim);
+    margin: 0;
+  }
+
+  /* --- meter heart gauge (signature element) --- */
+  .gauge-wrap{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    margin: 18px 0 26px;
+  }
+  .meter{
+    width: 140px;
+    height: 87px;
+    position: relative;
+  }
+  .meter svg{ width:100%; height:100%; display:block; overflow:visible; }
+  .meter .needle{
+    transition: transform 0.6s cubic-bezier(.4,0,.2,1);
+    transform-origin: 50px 56px;
+    transform-box: view-box;
+  }
+  .gauge-label{
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--line-dim);
+  }
+  .gauge-label b{ color: var(--mint); font-weight: 400; }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid #2b3143;
+    border-radius: var(--radius);
+    padding: 26px 22px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+
+  .qnum{
+    font-size: 11px;
+    color: var(--mint);
+    margin-bottom: 8px;
+  }
+  .question{
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .options{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .opt{
+    text-align:left;
+    background: var(--panel-2);
+    border: 1px solid #333a4d;
+    color: var(--line);
+    font-family: inherit;
+    font-size: 15px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.1s, background 0.15s;
+  }
+  .opt:hover{ border-color: var(--mint); }
+  .opt:active{ transform: scale(0.98); }
+  .opt:focus-visible{
+    outline: 2px solid var(--mint);
+    outline-offset: 2px;
+  }
+
+  /* result */
+  .result .genre-tag{
+    display:inline-block;
+    font-size: 11px;
+    color: var(--bg);
+    background: var(--mint);
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .result h2{
+    font-size: 24px;
+    margin: 0 0 10px;
+    font-weight: 900;
+  }
+  .result .desc{
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: #dfe1e8;
+    margin-bottom: 18px;
+  }
+  .code-strip{
+    background: #0e1018;
+    border: 1px dashed #333a4d;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 11.5px;
+    color: var(--mint);
+    margin-bottom: 20px;
+    overflow-wrap: break-word;
+    line-height: 1.6;
+  }
+  .code-strip span{ color: var(--line-dim); }
+
+  .btn-row{ display:flex; flex-direction:column; gap:10px; }
+  .btn{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+  }
+  .btn.primary{
+    background: var(--ume);
+    color: #fff;
+  }
+  .btn.primary:hover{ background: #d8524a; }
+  .btn.secondary{
+    background: transparent;
+    color: var(--line-dim);
+    border: 1px solid #333a4d;
+  }
+  .btn.secondary:hover{ color: var(--line); border-color: var(--line-dim); }
+
+  .btn.x{
+    background: #0e1018;
+    color: var(--line);
+    border: 1px solid #333a4d;
+  }
+  .btn.x:hover{ border-color: var(--line); }
+
+  footer.note{
+    text-align:center;
+    font-size: 11px;
+    color: var(--line-dim);
+    margin-top: 18px;
+    line-height: 1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="eyebrow mono">KASHIWO DIAGNOSTIC SYSTEM</div>
+    <h1>カシヲ診断</h1>
+    <p>8つの質問から、今日のあなたにぴったりの回を導き出します</p>
+  </header>
+
+  <div class="gauge-wrap">
+    <div class="meter">
+      <svg viewBox="0 0 100 62">
+        <path d="M 10 56 A 40 40 0 0 1 90 56" fill="none" stroke="#333a4d" stroke-width="5" stroke-linecap="round"/>
+        <g fill="var(--line-dim)">
+          <circle cx="14" cy="56" r="2.2"/>
+          <circle cx="18.82" cy="38" r="2.2"/>
+          <circle cx="32" cy="24.82" r="2.2"/>
+          <circle cx="50" cy="20" r="2.2"/>
+          <circle cx="68" cy="24.82" r="2.2"/>
+          <circle cx="81.18" cy="38" r="2.2"/>
+          <circle cx="86" cy="56" r="2.2"/>
+        </g>
+        <line class="needle" id="needle" x1="50" y1="56" x2="14" y2="56" stroke="#f4f5f7" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="50" cy="56" r="6" fill="var(--ume)"/>
+      </svg>
+    </div>
+    <div class="gauge-label mono">診断進捗 <b id="gaugeText">0%</b></div>
+  </div>
+
+  <div class="card" id="card"></div>
+
+  <footer class="note">
+    ※結果はYouTube「@kashiwo」チャンネル内検索へのリンクです。<br>
+    最新の該当動画はYouTube側の検索結果からお選びください。
+  </footer>
+</div>
+
+<script>
+/* vector axes: [tension, participation, story, gachi, time, collab] */
+const SERIES = [
+  { name: "ホラゲナイ", keyword: "ホラゲナイ", genre: "ホラー(ソロ・ガチ)",
+    vec: [9,2,4,5,6,1],
+    desc: "一人でガチにホラーゲームへ挑む、絶叫と恐怖の実況シリーズ。" },
+  { name: "マイクラ肝試し", keyword: "マイクラ 肝試し", genre: "ホラー×コラボ",
+    vec: [8,6,2,3,5,8],
+    desc: "マインクラフトの肝試し企画。コラボ相手と一緒にワイワイ怖がる、恐怖と笑いの二刀流。" },
+  { name: "はかしもん", keyword: "はかしもん", genre: "コラボ・わいわい",
+    vec: [7,3,2,2,5,9],
+    desc: "はかせ・J-mon・どんぼこなど、おなじみメンバーとのコラボ企画。テンポの良い掛け合いが魅力。" },
+  { name: "マシュマロ", keyword: "マシュマロ", genre: "視聴者参加・雑談",
+    vec: [3,8,3,1,4,2],
+    desc: "視聴者から届いたお便り(マシュマロ)をもとにまったりトーク。雑談枠でゆったりしたい人向け。" },
+  { name: "マルチ", keyword: "マルチ", genre: "視聴者参加・協力プレイ",
+    vec: [6,9,2,3,5,6],
+    desc: "視聴者参加型のマルチプレイ企画。みんなで一緒に遊んでいる一体感が魅力。" },
+  { name: "ピラミッド", keyword: "ピラミッド", genre: "視聴者参加・頭脳戦",
+    vec: [6,8,4,6,6,5],
+    desc: "視聴者参加型の頭脳戦・心理戦企画。駆け引きやスリルを楽しみたい人向け。" },
+  { name: "ぼくオリ", keyword: "ぼくオリ", genre: "視聴者参加・創作",
+    vec: [4,8,3,1,5,3],
+    desc: "「ぼくのかんがえる最強のオリキャラ」を視聴者と一緒に考える創作企画。" },
+  { name: "おもじゃん(OMJ)", keyword: "おもじゃん", genre: "大喜利・ネタ",
+    vec: [8,6,1,2,4,4],
+    desc: "大喜利サイト「おもじゃん」を使ったネタ全開の企画。テンポよく笑いたい人向け。" },
+  { name: "カシデミー賞", keyword: "カシデミー賞", genre: "ネタ・年間総括",
+    vec: [8,3,2,1,7,3],
+    desc: "年度末に一年を振り返る、お祭り感満載の総括企画。" },
+  { name: "FPS/対戦ゲー", keyword: "APEX", genre: "対人・ガチ対戦",
+    vec: [8,2,1,9,5,4],
+    desc: "APEX、PUBG、VALORANT、スプラトゥーン、Escape from Tarkov(タルコフ)など、対人戦にガチで挑むシリーズ。" },
+  { name: "RPG(冒険・ストーリー)", keyword: "ドラクエ", genre: "冒険・ストーリー重視",
+    vec: [4,1,10,3,8,1],
+    desc: "ドラクエ、ゼルダ、ポケモン、テイルズ、NieR:Automata、エルデンリングなど、物語をじっくり楽しむRPGシリーズ。" },
+  { name: "かしだめし/カシコフ", keyword: "カシコフ", genre: "視聴者参加型・マインクラフト",
+    vec: [7,9,2,7,7,4],
+    desc: "マインクラフトを舞台にした視聴者参加型のサバイバルPvP企画。装備を集めて生き残る駆け引きを、視聴者と一緒に楽しむシリーズ。" },
+  { name: "TRPG(クトゥルフ神話)", keyword: "クトゥルフ TRPG", genre: "怪奇・ロールプレイ",
+    vec: [5,4,9,2,7,5],
+    desc: "クトゥルフ神話TRPGでのセッション回。怪奇な物語をロールプレイで楽しむ。" },
+  { name: "あつ森/ぼくのなつやすみ", keyword: "あつ森", genre: "まったり生活系",
+    vec: [1,2,2,1,6,1],
+    desc: "あつまれ どうぶつの森や、ぼくのなつやすみなど、のんびり日常を過ごす系ゲーム。" },
+  { name: "アマプラ同時視聴", keyword: "アマプラ 同時視聴", genre: "まったり同時視聴",
+    vec: [2,4,5,1,6,3],
+    desc: "Amazon Prime Videoの映画・アニメをカシヲさんと一緒にまったり同時視聴。" },
+  { name: "企画もの", keyword: "かっしーとずっといっしょ", genre: "お祭り・記念企画",
+    vec: [5,4,3,1,7,6],
+    desc: "「かっしーとずっといっしょ」や「恋するファンズ」など、季節や記念日に合わせた特別企画。" },
+  { name: "クリップ", keyword: "クリップ", genre: "短時間ダイジェスト",
+    vec: [5,1,1,1,1,3],
+    desc: "面白いところだけを詰め込んだ短時間ダイジェスト。サクッと見たい人向け。" }
+];
+
+const QUESTIONS = [
+  {
+    text: "あなたの基本スタイルは?",
+    options: [
+      { label: "みんなでワイワイ盛り上がるのが好き", delta:[3,3,0,0,0,2] },
+      { label: "一人の世界にどっぷり浸るのが好き", delta:[-2,-4,3,0,0,-2] },
+      { label: "負けず嫌いで勝負事が好き", delta:[2,-1,0,4,0,0] },
+      { label: "まったり癒されるのが好き", delta:[-3,0,0,-2,0,0] }
+    ]
+  },
+  {
+    text: "今日の気分に近いのは?",
+    options: [
+      { label: "とにかく笑いたい気分", delta:[2,0,-2,-1,0,0] },
+      { label: "じっくり考えたい・感動したい気分", delta:[-1,0,4,0,2,0] },
+      { label: "誰かと一緒に画面の前で騒ぎたい気分", delta:[2,3,0,0,0,2] },
+      { label: "ゾクゾクしたい・怖い話が見たい気分", delta:[4,0,1,0,0,0] }
+    ]
+  },
+  {
+    text: "見たいスタイルは?",
+    options: [
+      { label: "視聴者と一緒に参加してる感じがいい", delta:[0,4,0,0,0,0] },
+      { label: "カシヲさん一人プレイをじっくり見たい", delta:[0,-3,1,0,1,-2] },
+      { label: "他の実況者さんとのコラボが見たい", delta:[1,-1,0,0,0,4] },
+      { label: "対人戦・ガチバトルが見たい", delta:[2,-2,0,5,0,0] }
+    ]
+  },
+  {
+    text: "求めるジャンル感は?",
+    options: [
+      { label: "ホラー・お化け屋敷的なもの", delta:[3,0,1,0,0,0] },
+      { label: "頭脳戦・心理戦", delta:[0,1,1,3,0,0] },
+      { label: "ファンタジー・冒険物語", delta:[-1,0,4,0,1,0] },
+      { label: "大喜利・ネタ全開", delta:[3,1,-2,0,0,0] }
+    ]
+  },
+  {
+    text: "動画を見るならどんなスタイルがいい?",
+    options: [
+      { label: "面白いシーンだけ効率よく見たい", delta:[0,0,-2,0,-4,0] },
+      { label: "ながら見でちょうどいいくらいがいい", delta:[0,0,0,0,0,0] },
+      { label: "じっくり一つの物語・配信に没入したい", delta:[0,0,2,0,4,0] }
+    ]
+  },
+  {
+    text: "次の中で、一番「これいいな」と思うシーンは?",
+    options: [
+      { label: "一瞬の駆け引きで相手を制する緊張感", delta:[2,-2,0,4,0,1] },
+      { label: "壮大な世界を旅して、仲間と物語を紡いでいく", delta:[-1,-1,5,0,2,0] },
+      { label: "限られた装備で、生き延びるためのサバイバル感", delta:[1,-3,0,5,1,0] },
+      { label: "会話と想像力で、不思議な物語を作っていく", delta:[0,1,4,0,1,0] }
+    ]
+  },
+  {
+    text: "一緒に過ごすならどんな時間?",
+    options: [
+      { label: "生活・スローライフ系のまったりした時間", delta:[-4,-1,0,0,0,0] },
+      { label: "映画・アニメを同時視聴", delta:[-2,0,2,0,0,0] },
+      { label: "大型企画・記念イベント", delta:[1,0,0,0,2,2] },
+      { label: "視聴者参加の創作企画", delta:[0,3,0,0,0,0] }
+    ]
+  },
+  {
+    text: "最後にひとつ、いま一番欲しいものは?",
+    options: [
+      { label: "とにかくガッツリ勝負したい", delta:[1,0,0,4,0,0] },
+      { label: "みんなでほのぼの過ごしたい", delta:[-2,2,0,-2,0,0] },
+      { label: "びっくりさせてほしい", delta:[3,0,0,0,0,0] },
+      { label: "考察しがいのある物語が見たい", delta:[-1,0,3,0,1,0] }
+    ]
+  }
+];
+
+let step = 0;
+let vec = [5,5,5,5,5,5]; // tension, participation, story, gachi, time, collab
+
+const card = document.getElementById('card');
+const needle = document.getElementById('needle');
+const gaugeText = document.getElementById('gaugeText');
+
+function clamp(v){ return Math.max(0, Math.min(10, v)); }
+
+function updateGauge(){
+  const ratio = step / QUESTIONS.length;
+  const pct = Math.round(ratio * 100);
+  const deg = ratio * 180;
+  needle.style.transform = `rotate(${deg}deg)`;
+  gaugeText.textContent = pct + '%';
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[step];
+  card.innerHTML = `
+    <div class="qnum mono">Q${step+1} / ${QUESTIONS.length}</div>
+    <div class="question">${q.text}</div>
+    <div class="options">
+      ${q.options.map((o,i) => `<button class="opt" data-i="${i}">${o.label}</button>`).join('')}
+    </div>
+  `;
+  card.querySelectorAll('.opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const o = q.options[parseInt(btn.dataset.i)];
+      vec = vec.map((v,idx) => clamp(v + o.delta[idx]));
+      step++;
+      updateGauge();
+      if(step < QUESTIONS.length){
+        renderQuestion();
+      } else {
+        renderResult();
+      }
+    });
+  });
+}
+
+function nearestSeries(){
+  let best = null, bestDist = Infinity;
+  SERIES.forEach(s => {
+    const d = s.vec.reduce((sum, val, idx) => sum + Math.pow(val - vec[idx], 2), 0);
+    if(d < bestDist){ bestDist = d; best = s; }
+  });
+  return best;
+}
+
+function renderResult(){
+  const s = nearestSeries();
+  const url = "https://www.youtube.com/@kashiwo/search?query=" + encodeURIComponent(s.keyword);
+  const shareText = `カシヲ診断の結果、私は「${s.name}」タイプでした!(${s.genre})\n#カシヲ診断`;
+  const shareUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText);
+  card.innerHTML = `
+    <div class="result">
+      <span class="genre-tag">${s.genre}</span>
+      <h2>${s.name}</h2>
+      <div class="desc">${s.desc}</div>
+      <div class="code-strip mono">
+        <span>SIGNAL //</span> TENSION:${vec[0]} PARTICIPATION:${vec[1]} STORY:${vec[2]} GACHI:${vec[3]} TIME:${vec[4]} COLLAB:${vec[5]}
+      </div>
+      <div class="btn-row">
+        <a class="btn primary" href="${url}" target="_blank" rel="noopener">YouTubeで「${s.name}」を探す</a>
+        <a class="btn x" href="${shareUrl}" target="_blank" rel="noopener">Xで結果をシェアする</a>
+        <button class="btn secondary" id="retry">もう一度診断する</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('retry').addEventListener('click', () => {
+    step = 0;
+    vec = [5,5,5,5,5,5];
+    updateGauge();
+    renderQuestion();
+  });
+}
+
+renderQuestion();
+updateGauge();
+</script>
+</body>
+</html>
