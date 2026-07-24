@@ -171,6 +171,32 @@
   }
   .code-strip span{ color: var(--line-dim); }
 
+  .chip-label{
+    font-size: 11px;
+    color: var(--line-dim);
+    margin-bottom: 8px;
+  }
+  .chip-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .chip{
+    display: inline-block;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--line);
+    background: var(--panel-2);
+    border: 1px solid var(--ume);
+    padding: 8px 14px;
+    border-radius: 999px;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .chip:hover{ background: var(--ume); }
+  .chip:active{ transform: scale(0.97); }
+
   .btn-row{ display:flex; flex-direction:column; gap:10px; }
   .btn{
     display:block;
@@ -255,56 +281,56 @@
 <script>
 /* vector axes: [tension, participation, story, gachi, time, collab] */
 const SERIES = [
-  { name: "ホラゲナイ", keyword: "ホラゲナイ", genre: "ホラー(ソロ・ガチ)",
-    vec: [9,2,4,5,6,1],
+  { name: "ホラゲナイ", keywords: ["ホラゲナイ"], genre: "ホラー(ソロ・ガチ)",
+    vec: [9,2,9,10,10,6],
     desc: "一人でガチにホラーゲームへ挑む、絶叫と恐怖の実況シリーズ。" },
-  { name: "マイクラ肝試し", keyword: "マイクラ 肝試し", genre: "ホラー×コラボ",
-    vec: [8,6,2,3,5,8],
+  { name: "マイクラ肝試し", keywords: ["マイクラ 肝試し"], genre: "ホラー×コラボ",
+    vec: [9,6,5,9,8,9],
     desc: "マインクラフトの肝試し企画。コラボ相手と一緒にワイワイ怖がる、恐怖と笑いの二刀流。" },
-  { name: "はかしもん", keyword: "はかしもん", genre: "コラボ・わいわい",
-    vec: [7,3,2,2,5,9],
+  { name: "はかしもん", keywords: ["はかしもん", "hakase", "J-mon", "どんぼこ"], genre: "コラボ・わいわい",
+    vec: [8,3,9,9,5,9],
     desc: "はかせ・J-mon・どんぼこなど、おなじみメンバーとのコラボ企画。テンポの良い掛け合いが魅力。" },
-  { name: "マシュマロ", keyword: "マシュマロ", genre: "視聴者参加・雑談",
-    vec: [3,8,3,1,4,2],
+  { name: "マシュマロ", keywords: ["マシュマロ"], genre: "視聴者参加・雑談",
+    vec: [4,8,9,5,4,7],
     desc: "視聴者から届いたお便り(マシュマロ)をもとにまったりトーク。雑談枠でゆったりしたい人向け。" },
-  { name: "マルチ", keyword: "マルチ", genre: "視聴者参加・協力プレイ",
-    vec: [6,9,2,3,5,6],
+  { name: "マルチ", keywords: ["マルチ"], genre: "視聴者参加・協力プレイ",
+    vec: [8,8,9,9,4,7],
     desc: "視聴者参加型のマルチプレイ企画。みんなで一緒に遊んでいる一体感が魅力。" },
-  { name: "ピラミッド", keyword: "ピラミッド", genre: "視聴者参加・頭脳戦",
-    vec: [6,8,4,6,6,5],
-    desc: "視聴者参加型の頭脳戦・心理戦企画。駆け引きやスリルを楽しみたい人向け。" },
-  { name: "ぼくオリ", keyword: "ぼくオリ", genre: "視聴者参加・創作",
-    vec: [4,8,3,1,5,3],
+  { name: "ピラミッド", keywords: ["ピラミッド"], genre: "視聴者参加・労働×悲鳴",
+    vec: [8,9,10,4,9,8],
+    desc: "ピラミッド建設のためにひたすら働く視聴者参加型企画。ノルマや過酷な労働に耐えながら、時々あがる悲鳴も楽しみのひとつ。" },
+  { name: "ぼくオリ", keywords: ["ぼくオリ"], genre: "視聴者参加・創作",
+    vec: [2,9,10,3,9,6],
     desc: "「ぼくのかんがえる最強のオリキャラ」を視聴者と一緒に考える創作企画。" },
-  { name: "おもじゃん(OMJ)", keyword: "おもじゃん", genre: "大喜利・ネタ",
-    vec: [8,6,1,2,4,4],
+  { name: "おもじゃん(OMJ)", keywords: ["おもじゃん", "OMJ"], genre: "大喜利・ネタ",
+    vec: [8,8,4,8,3,8],
     desc: "大喜利サイト「おもじゃん」を使ったネタ全開の企画。テンポよく笑いたい人向け。" },
-  { name: "カシデミー賞", keyword: "カシデミー賞", genre: "ネタ・年間総括",
-    vec: [8,3,2,1,7,3],
+  { name: "カシデミー賞", keywords: ["カシデミー賞"], genre: "ネタ・年間総括",
+    vec: [8,4,10,5,9,4],
     desc: "年度末に一年を振り返る、お祭り感満載の総括企画。" },
-  { name: "FPS/対戦ゲー", keyword: "APEX", genre: "対人・ガチ対戦",
-    vec: [8,2,1,9,5,4],
+  { name: "FPS/対戦ゲー", keywords: ["APEX", "PUBG", "VALORANT", "スプラトゥーン", "タルコフ"], genre: "対人・ガチ対戦",
+    vec: [9,2,9,10,5,4],
     desc: "APEX、PUBG、VALORANT、スプラトゥーン、Escape from Tarkov(タルコフ)など、対人戦にガチで挑むシリーズ。" },
-  { name: "RPG(冒険・ストーリー)", keyword: "ドラクエ", genre: "冒険・ストーリー重視",
-    vec: [4,1,10,3,8,1],
+  { name: "RPG(冒険・ストーリー)", keywords: ["ドラクエ", "ゼルダ", "ポケモン", "テイルズ", "NieR Automata", "エルデンリング"], genre: "冒険・ストーリー重視",
+    vec: [4,1,10,9,9,4],
     desc: "ドラクエ、ゼルダ、ポケモン、テイルズ、NieR:Automata、エルデンリングなど、物語をじっくり楽しむRPGシリーズ。" },
-  { name: "かしだめし/カシコフ", keyword: "カシコフ", genre: "視聴者参加型・マインクラフト",
-    vec: [7,9,2,7,7,4],
+  { name: "かしだめし/カシコフ", keywords: ["カシコフ", "かしだめし"], genre: "視聴者参加型・マインクラフト",
+    vec: [9,7,10,9,9,8],
     desc: "マインクラフトを舞台にした視聴者参加型のサバイバルPvP企画。装備を集めて生き残る駆け引きを、視聴者と一緒に楽しむシリーズ。" },
-  { name: "TRPG(クトゥルフ神話)", keyword: "クトゥルフ TRPG", genre: "怪奇・ロールプレイ",
-    vec: [5,4,9,2,7,5],
+  { name: "TRPG(クトゥルフ神話)", keywords: ["クトゥルフ", "TRPG"], genre: "怪奇・ロールプレイ",
+    vec: [4,7,10,9,9,6],
     desc: "クトゥルフ神話TRPGでのセッション回。怪奇な物語をロールプレイで楽しむ。" },
-  { name: "あつ森/ぼくのなつやすみ", keyword: "あつ森", genre: "まったり生活系",
-    vec: [1,2,2,1,6,1],
+  { name: "あつ森/ぼくのなつやすみ", keywords: ["あつ森", "ぼくのなつやすみ"], genre: "まったり生活系",
+    vec: [4,2,9,9,4,4],
     desc: "あつまれ どうぶつの森や、ぼくのなつやすみなど、のんびり日常を過ごす系ゲーム。" },
-  { name: "アマプラ同時視聴", keyword: "アマプラ 同時視聴", genre: "まったり同時視聴",
-    vec: [2,4,5,1,6,3],
+  { name: "アマプラ同時視聴", keywords: ["アマプラ 同時視聴"], genre: "まったり同時視聴",
+    vec: [2,3,10,4,9,3],
     desc: "Amazon Prime Videoの映画・アニメをカシヲさんと一緒にまったり同時視聴。" },
-  { name: "企画もの", keyword: "かっしーとずっといっしょ", genre: "お祭り・記念企画",
-    vec: [5,4,3,1,7,6],
+  { name: "企画もの", keywords: ["かっしーとずっといっしょ", "恋するファンズ"], genre: "お祭り・記念企画",
+    vec: [3,3,10,7,9,9],
     desc: "「かっしーとずっといっしょ」や「恋するファンズ」など、季節や記念日に合わせた特別企画。" },
-  { name: "クリップ", keyword: "クリップ", genre: "短時間ダイジェスト",
-    vec: [5,1,1,1,1,3],
+  { name: "クリップ", keywords: ["クリップ"], genre: "短時間ダイジェスト",
+    vec: [8,2,4,9,3,7],
     desc: "面白いところだけを詰め込んだ短時間ダイジェスト。サクッと見たい人向け。" }
 ];
 
@@ -434,9 +460,12 @@ function nearestSeries(){
 
 function renderResult(){
   const s = nearestSeries();
-  const url = "https://www.youtube.com/@kashiwo/search?query=" + encodeURIComponent(s.keyword);
   const shareText = `カシヲ診断の結果、私は「${s.name}」タイプでした!(${s.genre})\n#カシヲ診断`;
   const shareUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText) + "&url=" + encodeURIComponent(location.href);
+  const chips = s.keywords.map(k => {
+    const u = "https://www.youtube.com/@kashiwo/search?query=" + encodeURIComponent(k);
+    return `<a class="chip" href="${u}" target="_blank" rel="noopener">${k}</a>`;
+  }).join('');
   card.innerHTML = `
     <div class="result">
       <span class="genre-tag">${s.genre}</span>
@@ -445,8 +474,9 @@ function renderResult(){
       <div class="code-strip mono">
         <span>SIGNAL //</span> TENSION:${vec[0]} PARTICIPATION:${vec[1]} STORY:${vec[2]} GACHI:${vec[3]} TIME:${vec[4]} COLLAB:${vec[5]}
       </div>
+      <div class="chip-label mono">チャンネル内で検索</div>
+      <div class="chip-row">${chips}</div>
       <div class="btn-row">
-        <a class="btn primary" href="${url}" target="_blank" rel="noopener">YouTubeで「${s.name}」を探す</a>
         <a class="btn x" href="${shareUrl}" target="_blank" rel="noopener">Xで結果をシェアする</a>
         <button class="btn secondary" id="retry">もう一度診断する</button>
       </div>
