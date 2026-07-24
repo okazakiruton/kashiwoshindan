@@ -237,6 +237,33 @@
     line-height: 1.6;
   }
 
+  .twitch-block{
+    text-align: center;
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid #2b3143;
+  }
+  .twitch-link{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #fff;
+    background: #9146FF;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .twitch-link:hover{ background: #7d2ff5; }
+  .twitch-link:active{ transform: scale(0.97); }
+  .twitch-comment{
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--mint);
+  }
+
   @media (prefers-reduced-motion: reduce){
     *{ transition: none !important; }
   }
@@ -276,6 +303,11 @@
     ※結果はYouTube「@kashiwo」チャンネル内検索へのリンクです。<br>
     最新の該当動画はYouTube側の検索結果からお選びください。
   </footer>
+
+  <div class="twitch-block">
+    <a class="twitch-link" href="https://www.twitch.tv/kashiwo" target="_blank" rel="noopener">Twitch: kashiwo</a>
+    <div class="twitch-comment">アーカイブも最高だけど、一番はリアルタイム視聴★</div>
+  </div>
 </div>
 
 <script>
@@ -305,9 +337,9 @@ const SERIES = [
   { name: "おもじゃん(OMJ)", keywords: ["おもじゃん", "OMJ"], genre: "大喜利・ネタ",
     vec: [8,8,4,8,3,8],
     desc: "大喜利サイト「おもじゃん」を使ったネタ全開の企画。テンポよく笑いたい人向け。" },
-  { name: "カシデミー賞", keywords: ["カシデミー賞"], genre: "ネタ・年間総括",
+  { name: "カシデミー賞/年度末総会", keywords: ["カシデミー賞", "年度末総会"], genre: "ネタ・定例企画",
     vec: [8,4,10,5,9,4],
-    desc: "年度末に一年を振り返る、お祭り感満載の総括企画。" },
+    desc: "年末や年度末に一年を振り返る、お祭り感満載の総括企画。" },
   { name: "FPS/対戦ゲー", keywords: ["APEX", "PUBG", "VALORANT", "スプラトゥーン", "タルコフ"], genre: "対人・ガチ対戦",
     vec: [9,2,9,10,5,4],
     desc: "APEX、PUBG、VALORANT、スプラトゥーン、Escape from Tarkov(タルコフ)など、対人戦にガチで挑むシリーズ。" },
